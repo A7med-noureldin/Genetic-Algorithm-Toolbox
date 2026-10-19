@@ -24,5 +24,6 @@ add_executable(Genetic_Algorithm_Toolbox main.cpp
         cvrp/InstanceParser.h
         cvrp/Decoder.h
         cvrp/CVRPProblem.h
-        cvrp/OutputFormatter.h
-        examples/onemax_example.cpp)
+        cvrp/OutputFormatter.h)
+add_executable(onemax_example examples/onemax_example.cpp)
+add_executable(test_chromosomes tests/test_chromosomes.cpp)
