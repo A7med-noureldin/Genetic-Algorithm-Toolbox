@@ -15,3 +15,5 @@ htmlcov/
 
 .idea/
 .vscode/
+
+cmake-build-debug
