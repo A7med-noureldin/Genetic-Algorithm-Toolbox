@@ -43,6 +43,8 @@ namespace ga
         bool is_evaluated() const { return evaluated; }
         bool is_feasible() const { return feasible; }
         void set_feasible(bool f) { feasible = f; }
+        T& operator[](std::size_t i){ return gen[i]; }
+        const T& operator[](std::size_t i) const { return gen[i]; }
     };
 }
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 4.1)
+cmake_minimum_required(VERSION 4.0.2)
 project(Genetic_Algorithm_Toolbox)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -24,6 +24,7 @@ add_executable(Genetic_Algorithm_Toolbox main.cpp
         cvrp/InstanceParser.h
         cvrp/Decoder.h
         cvrp/CVRPProblem.h
-        cvrp/OutputFormatter.h)
+        cvrp/OutputFormatter.h
+)
 add_executable(onemax_example examples/onemax_example.cpp)
 add_executable(test_chromosomes tests/test_chromosomes.cpp)
