@@ -222,7 +222,10 @@ void CVRPProblem::buildDistances() {
         for (int b = 0; b < m; b++) {
             double dx = px[a] - px[b];
             double dy = py[a] - py[b];
-            dist[a][b] = sqrt(dx * dx + dy * dy);
+            // Manhattan distance
+            dist[a][b] = fabs(dx) + fabs(dy);
+            // Euclidean distance
+            //dist[b][a] = sqrt(dx * dx + dy * dy);
             maxDist = max(maxDist, dist[a][b]);
         }
     }
