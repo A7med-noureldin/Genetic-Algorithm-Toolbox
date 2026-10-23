@@ -9,6 +9,11 @@ using namespace std;
 
 const double EPS = 1e-9;
 
+//true  -> Euclidean
+//false -> Manhattan    (for google.txt)
+const bool IS_EUCLIDEAN = false;
+const size_t MAX_CACHE_ENTRIES = 200000;
+
 CVRPProblem::CVRPProblem() {
     bigM = 0;
     penaltyPerUnit = 0;
@@ -110,7 +115,7 @@ bool CVRPProblem::validate() const {
 
 double CVRPProblem::costOf(const vector<int>& genes) const {
     if (!isPermutation(genes)){
-        return 10 * bigM; 
+        return 10 * bigM;
     }
 
     vector<vector<int> > routes = decode(genes);
@@ -182,7 +187,7 @@ void CVRPProblem::printGenes(const vector<int>& genes) const {
     double totalDistance = 0, totalLoad = 0;
     for (int t = 0; t < (int)routes.size(); t++) {
         if (routes[t].empty()){
-             continue; 
+             continue;
         }
 
         cout << "Route for vehicle " << t << ":\n 0";
@@ -222,10 +227,12 @@ void CVRPProblem::buildDistances() {
         for (int b = 0; b < m; b++) {
             double dx = px[a] - px[b];
             double dy = py[a] - py[b];
-            // Manhattan distance
-            dist[a][b] = fabs(dx) + fabs(dy);
-            // Euclidean distance
-            //dist[b][a] = sqrt(dx * dx + dy * dy);
+
+            if (IS_EUCLIDEAN) {
+                dist[a][b] = floor(sqrt(dx * dx + dy * dy) + 0.5);
+            } else {
+                dist[a][b] = fabs(dx) + fabs(dy);
+            }
             maxDist = max(maxDist, dist[a][b]);
         }
     }
@@ -250,6 +257,11 @@ vector<vector<int> > CVRPProblem::decode(const vector<int>& genes) const {
         return it->second;
     }
     vector<vector<int> > routes = buildRoutes(genes);
+
+    if (cache.size() >= MAX_CACHE_ENTRIES) {
+        cache.clear();
+    }
+
     cache[genes] = routes;
     return routes;
 }

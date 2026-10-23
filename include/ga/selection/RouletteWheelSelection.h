@@ -33,31 +33,35 @@ namespace ga{
 
             if(count == 0) return {};
 
-            std::vector<double> cumulativeFitness;
-            cumulativeFitness.reserve(population.size());
+            std::vector<double> fitnesses;
+            fitnesses.reserve(population.size());
 
-            double totalFitness = 0.0;
+            double minFitness = 0.0;
+            double maxFitness = 0.0;
 
-            for(const auto& chromosome : population){
-                double fitness = chromosome.get_fitness();
+            for(std::size_t i = 0; i < population.size(); ++i){
+                double fitness = population[i].get_fitness();
 
                 if(!std::isfinite(fitness) || fitness < 0){
                     throw std::invalid_argument("Roulette Wheel requires non negative fitness");
                 }
 
-                totalFitness+= fitness;
-                if (!std::isfinite(totalFitness)) {
-                    throw std::invalid_argument(
-                            "Total fitness is too large."
-                    );
+                if(i == 0){
+                    minFitness = fitness;
+                    maxFitness = fitness;
+                }else{
+                    minFitness = std::min(minFitness, fitness);
+                    maxFitness = std::max(maxFitness, fitness);
                 }
-                cumulativeFitness.push_back(totalFitness);
+                fitnesses.push_back(fitness);
             }
 
             std::vector<std::size_t> selected;
             selected.reserve(count);
 
-            if (totalFitness == 0.0) {
+            const double span = maxFitness - minFitness;
+
+            if (!(span > 0.0)) {
                 for (std::size_t i = 0; i < count; ++i) {
                     selected.push_back(static_cast<std::size_t>(
                                                randomGenerator.next_int(
@@ -70,8 +74,24 @@ namespace ga{
                 return selected;
             }
 
+            const double floorWeight = 0.01 * span;
+
+            std::vector<double> cumulativeFitness;
+            cumulativeFitness.reserve(population.size());
+
+            double totalWeight = 0.0;
+            for(std::size_t i = 0; i < fitnesses.size(); ++i){
+                totalWeight += (fitnesses[i] - minFitness) + floorWeight;
+                if (!std::isfinite(totalWeight)) {
+                    throw std::invalid_argument(
+                            "Total fitness is too large."
+                    );
+                }
+                cumulativeFitness.push_back(totalWeight);
+            }
+
             for (std::size_t i = 0; i < count; ++i) {
-                double randomTarget  = randomGenerator.next_real(0.0, totalFitness);
+                double randomTarget  = randomGenerator.next_real(0.0, totalWeight);
 
                 auto it = std::upper_bound(cumulativeFitness.begin(), cumulativeFitness.end(), randomTarget);
                 if(it == cumulativeFitness.end()){
