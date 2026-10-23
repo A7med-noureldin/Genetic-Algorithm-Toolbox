@@ -25,6 +25,7 @@ void CVRPProblem::readInputs() {
     py.clear();
     demand.clear();
     capacity.clear();
+    cache.clear();
 
     cout << "=== CVRP inputs ===\n";
 
@@ -240,22 +241,85 @@ bool CVRPProblem::isPermutation(const vector<int>& genes) const {
     }
     return true;
 }
-
-
-vector<vector<int>> CVRPProblem::decode(const vector<int>& genes) const {
-    int k = trucks();
-    vector<vector<int>> routes(k);
-    vector<double> remaining = capacity;   
-    int truck = 0;                         
-    for (int i = 0; i < (int)genes.size(); i++) {
-        int customer = genes[i];
-        if (demand[customer] > remaining[truck] + EPS && !routes[truck].empty() && truck < k - 1) {
-            truck++;
-        }
-        routes[truck].push_back(customer);
-        remaining[truck] -= demand[customer];
+vector<vector<int> > CVRPProblem::decode(const vector<int>& genes) const {
+    map<vector<int>, vector<vector<int> > >::const_iterator it = cache.find(genes);
+    if (it != cache.end()){
+        return it->second;
     }
+    vector<vector<int> > routes = buildRoutes(genes);
+    cache[genes] = routes;
     return routes;
+}
+
+double CVRPProblem::bestSplit(const vector<int>& genes, int truck, int pos,
+                              vector<vector<double> >& memo, vector<vector<int> >& choice) const {
+    int n = (int)genes.size();
+    if (pos == n){
+         return 0;                    
+    }
+    if (truck == trucks()){
+         return 1e18;       
+    }
+    if (memo[truck][pos] >= 0){
+         return memo[truck][pos];   
+    }
+
+    double best = 1e18;
+    int bestEnd = pos;
+    double load = 0, distance_built_till_now = dist[0][genes[pos]];
+    for (int end = pos + 1; end <= n; end++) {
+        load += demand[genes[end - 1]];
+        if (load > capacity[truck] + EPS){
+            break;                
+        }
+        if (end - 1 > pos){
+             distance_built_till_now += dist[genes[end - 2]][genes[end - 1]];
+        }
+        double total = distance_built_till_now + dist[genes[end - 1]][0] + bestSplit(genes, truck + 1, end, memo, choice);
+        if (total < best){
+            best = total;
+            bestEnd = end;
+        }
+    }
+
+    double skip = bestSplit(genes, truck + 1, pos, memo, choice);
+    if (skip < best - EPS) { best = skip; bestEnd = pos; }
+
+    choice[truck][pos] = bestEnd;
+    memo[truck][pos] = best;
+    return best;
+}
+
+vector<vector<int>> CVRPProblem::buildRoutes(const vector<int>& genes) const {
+    int k = trucks();
+    int n = (int)genes.size();
+
+    vector<vector<double> > memo(k, vector<double>(n + 1, -1));
+    vector<vector<int> > choice(k, vector<int>(n + 1, 0));
+    vector<vector<int> > routes(k);
+    if (bestSplit(genes, 0, 0, memo, choice) < 1e17) {
+        int pos = 0;
+        for (int t = 0; t < k && pos < n; t++) {
+            int end = choice[t][pos];
+            for (int i = pos; i < end; i++) routes[t].push_back(genes[i]);
+            pos = end;
+        }
+        return routes;
+    }
+    else{
+        vector<vector<int>> routes(k);
+        vector<double> remaining = capacity;   
+        int truck = 0;                         
+        for (int i = 0; i < (int)genes.size(); i++) {
+            int customer = genes[i];
+            if (demand[customer] > remaining[truck] + EPS && !routes[truck].empty() && truck < k - 1) {
+                truck++;
+            }
+            routes[truck].push_back(customer);
+            remaining[truck] -= demand[customer];
+        }
+        return routes;
+    }
 }
 
 

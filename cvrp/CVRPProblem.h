@@ -6,6 +6,7 @@
 #define GENETIC_ALGORITHM_TOOLBOX_CVRPPROBLEM_H
 
 #include "Problem.h"
+#include <map>
 #include "../include/ga/chromosomes/IntegerChromosome.h"
 
 class CVRPProblem : public Problem<ga::IntegerChromosome> {
@@ -15,6 +16,7 @@ private:
     std::vector<double> demand;              
     std::vector<double> capacity;            
     std::vector<std::vector<double>> dist;  
+    mutable std::map<std::vector<int>, std::vector<std::vector<int> > > cache;        
     double bigM;                             
     double penaltyPerUnit;                   
 
@@ -26,6 +28,9 @@ private:
     double routeDistance(const std::vector<int>& route) const;
     double routeLoad(const std::vector<int>& route) const;
     double totalOverload(const std::vector<std::vector<int> >& routes) const;
+    std::vector<std::vector<int> > buildRoutes(const std::vector<int>& genes) const;
+    double bestSplit(const std::vector<int>& genes, int truck, int pos,
+                     std::vector<std::vector<double> >& memo, std::vector<std::vector<int> >& choice) const;
 
     
     double costOf(const std::vector<int>& genes) const;

@@ -308,8 +308,6 @@ bool GAEngine<C>::run() {
         return false;
     }
 
-    config.minimize = false;
-    config.elitism_count = 0;    // we do not use elitism
     std::string error = ga::validate(config);
     if (!error.empty()) {
         std::cout << "Invalid settings: " << error << "\n";
