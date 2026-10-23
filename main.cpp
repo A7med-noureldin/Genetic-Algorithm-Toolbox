@@ -1,7 +1,11 @@
 #include <iostream>
+#include "presentation/app.h"
+
 using namespace std;
 int main()
 {
-    cout << "Hello, World!" << std::endl;
+    App app;
+    app.run();
+
     return 0;
 }

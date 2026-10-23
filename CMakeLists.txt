@@ -19,12 +19,19 @@ add_executable(Genetic_Algorithm_Toolbox main.cpp
         include/ga/crossover/OrderCrossover.h
         include/ga/mutation/Mutation.h
         include/ga/constraints/ConstraintHandler.h
-        include/ga/engine/GeneticAlgorithm.h
-        cvrp/CVRPInstance.h
-        cvrp/InstanceParser.h
-        cvrp/Decoder.h
+        include/ga/engine/GAEngine.h
+        include/ga/engine/operatorCatalog.h
         cvrp/CVRPProblem.h
-        cvrp/OutputFormatter.h
+        cvrp/Problem.h
+        cvrp/CVRPProblem.cpp
+        presentation/app.h
+        presentation/app.cpp
+        include/ga/mutation/SwapMutation.cpp
+        include/ga/mutation/FlipMutation.cpp
+        include/ga/mutation/UniformMutation.cpp
+        include/ga/mutation/NonUniformMutation.cpp
+        include/ga/engine/operatorCatalog.h
+        include/ga/engine/operatorCatalog.cpp
 )
-add_executable(onemax_example examples/onemax_example.cpp)
+add_executable(onemax_example examples/onemax_example.cpp include/ga/mutation/FlipMutation.cpp)
 add_executable(test_chromosomes tests/test_chromosomes.cpp)

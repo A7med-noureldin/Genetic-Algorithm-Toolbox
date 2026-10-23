@@ -16,7 +16,6 @@
 #include "crossover/Crossover.h"
 #include "crossover/MultiPointCrossover.h"
 #include "crossover/OrderCrossover.h"
-#include "engine/GeneticAlgorithm.h"
 #include "mutation/Mutation.h"
 #include "replacement/Replacement.h"
 #include "selection/Selection.h"

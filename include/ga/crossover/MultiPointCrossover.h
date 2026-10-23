@@ -1,11 +1,15 @@
 //
 // Created by hazem on 10/19/26.
 //
-#include "Crossover.h"
-#include "../chromosomes/Chromosome.h"
-
 #ifndef GENETIC_ALGORITHM_TOOLBOX_MULTIPOINTCROSSOVER_H
 #define GENETIC_ALGORITHM_TOOLBOX_MULTIPOINTCROSSOVER_H
+
+#include "Crossover.h"
+#include "../chromosomes/Chromosome.h"
+#include <algorithm>
+#include <numeric>
+#include <random>
+
 namespace ga{
     template <typename Gene>
     class MultiPointCrossover : public Crossover<Gene> {

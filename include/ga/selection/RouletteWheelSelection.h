@@ -73,7 +73,7 @@ namespace ga{
             for (std::size_t i = 0; i < count; ++i) {
                 double randomTarget  = randomGenerator.next_real(0.0, totalFitness);
 
-                auto it = std::upper_bound(cumulativeFitness.begin(), cumulativeFitness.end(), RandomTarget);
+                auto it = std::upper_bound(cumulativeFitness.begin(), cumulativeFitness.end(), randomTarget);
                 if(it == cumulativeFitness.end()){
                     selected.push_back(static_cast<std::size_t>(population.size() - 1));
                 }else {

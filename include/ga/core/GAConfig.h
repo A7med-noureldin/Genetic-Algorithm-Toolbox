@@ -18,7 +18,6 @@ namespace ga
         double crossover_rate = 0.8;
         double mutation_rate = 0.05;   // per chromosome
         unsigned int seed = 42;
-        int elitism_count = 1;   //how many best individuals survive untouched
         bool minimize = false;
     };
 
@@ -33,8 +32,6 @@ namespace ga
             return "crossover_rate must be between 0 and 1";
         if (ga_config.mutation_rate < 0.0 || ga_config.mutation_rate > 1.0)
             return "mutation_rate must be between 0 and 1";
-        if (ga_config.elitism_count < 0 || ga_config.elitism_count >= ga_config.population_size)
-            return "elitism_count must be between 0 and population_size - 1";
         return "";
     }
 }
