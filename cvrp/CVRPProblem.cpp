@@ -11,7 +11,7 @@ const double EPS = 1e-9;
 
 //true  -> Euclidean
 //false -> Manhattan    (for google.txt)
-const bool IS_EUCLIDEAN = false;
+const bool IS_EUCLIDEAN = true;
 const size_t MAX_CACHE_ENTRIES = 200000;
 
 CVRPProblem::CVRPProblem() {
